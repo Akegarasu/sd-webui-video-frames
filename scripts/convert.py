@@ -17,7 +17,7 @@ def add_tab():
 
             with gr.Column(variant='panel'):
                 gr.HTML(value="<p>Merge frames to video</p>")
-                input_folder = gr.Textbox(label="Input video path")
+                input_folder = gr.Textbox(label="Input frames folder path")
                 output_video = gr.Textbox(label="Output video path")
                 output_video_fps = gr.Slider(minimum=1, maximum=60, step=1, label="Video FPS", value=30)
                 merge_frames_btn = gr.Button(label="Merge Frames", variant='primary')
