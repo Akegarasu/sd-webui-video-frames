@@ -13,6 +13,9 @@ def add_tab():
                 input_video = gr.Textbox(label="Input video path")
                 output_folder = gr.Textbox(label="Output frames folder path")
                 output_fps = gr.Slider(minimum=1, maximum=120, step=1, label="Save every N frame", value=1)
+                custom_resolution_checkbox = gr.Checkbox(label="Use custom resolution")
+                custom_width_slider = gr.Slider(minimum=1, maximum=1920, step=1, label="Custom Width", value=512)
+                custom_height_slider = gr.Slider(minimum=1, maximum=1080, step=1, label="Custom Height", value=768)
                 extract_frames_btn = gr.Button(label="Extract Frames", variant='primary')
 
             with gr.Column(variant='panel'):
@@ -27,7 +30,10 @@ def add_tab():
                 inputs=[
                     input_video,
                     output_folder,
-                    output_fps
+                    output_fps,
+                    custom_resolution_checkbox,
+                    custom_width_slider,
+                    custom_height_slider
                 ]
             )
 
@@ -43,13 +49,16 @@ def add_tab():
     return [(ui, "Video<->Frame", "vf_converter")]
 
 
-def extract_frames(video_path: str, output_path: str, custom_fps=None):
+def extract_frames(video_path: str, output_path: str, custom_fps=None,use_custom_resolution=False, custom_width=512, custom_height=768):
     """从视频文件中提取帧并输出为png格式
 
     Args:
         video_path (str): 视频文件的路径
         output_path (str): 输出帧的路径
         custom_fps (int, optional): 自定义输出帧率（默认为None，表示与视频帧率相同）
+        use_custom_resolution (bool): 是否使用自定义分辨率
+        custom_width (int): 自定义宽度
+        custom_height (int): 自定义高度
 
     Returns:
         None
@@ -64,6 +73,9 @@ def extract_frames(video_path: str, output_path: str, custom_fps=None):
         ret, frame = cap.read()
         if not ret:
             break
+
+        if use_custom_resolution:
+            frame = cv2.resize(frame, (custom_width, custom_height))
 
         if custom_fps:
             if frame_count % custom_fps == 0:
